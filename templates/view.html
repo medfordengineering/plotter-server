@@ -1,0 +1,20 @@
+<html>
+   <body>
+	<form action = "http://10.1.57.24:5000/process" method = "POST"
+		enctype = "multipart/form-dat">
+		<img src="{{url_for('static', filename=user_image)}}" /><br>
+		<p>
+		This file ( {{ filename }} ) has {{ points }} points. 
+		<p>
+		Select an output file size:<br>
+		<input type="radio"  name="process" id="NT" value = "noTSP">
+		<label for="NT">Print to OLED without TSP</label><br>
+		<input type="radio"  name="process" id= "WT" value = "withTSP">
+		<label for="WT">Print to OLED with TSP</label><br>
+		<input type="radio"  name="process" id= "PT" value = "Plotter">
+		<label for="PT">Print to plotter</label><br>
+		<p>
+		<input type = "submit">
+	</form>
+   </body>
+</html

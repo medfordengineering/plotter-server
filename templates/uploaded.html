@@ -1,0 +1,12 @@
+<html>
+   <body>
+	<form action = "http://localhost:5000/process" method = "POST"
+		enctype = "multipart/form-dat">
+		<img src="{{url_for('static', filename=user_image)}}" /><br>
+		<p>
+		This file ( {{ filename }} ) has {{ points }} points. 
+		<p>
+		<input type = "submit">
+	</form>
+   </body>
+</html

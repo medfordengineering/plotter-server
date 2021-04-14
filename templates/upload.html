@@ -1,0 +1,22 @@
+<html>
+   <body>
+      <form action = "http://10.1.57.24:5000/view" method = "POST" 
+         enctype = "multipart/form-data">
+		<label for="newfile">Select an image file:</label><br>
+		<input type = "file" id="newfile" name = "file"><br>
+		<p>
+		Select an output file size:<br>
+		<input type="radio"  name="size" id="small" value = "128x64">
+		<label for="small">128x64</label><br>
+		<input type="radio"  name="size" id= "medium" value = "320x240">
+		<label for="medium">320x240</label><br>
+		<input type="radio"  name="size" id= "large" value = "640x480">
+		<label for="medium">640x480</label><br>
+		<p>
+		<label for="pixels">Enter an upper bound for points:</label><br>
+		<input type="text" id="points" name="point_limit"><br>
+		<p>
+		<input type = "submit"/><br>
+      </form>   
+   </body>
+</html
