@@ -229,26 +229,26 @@ def ordered_solution(manager, routing, solution, coordinates):
 		index = solution.Value(routing.NextVar(index))
 	return ordered_pairs
 
-"""
 def print_solution(coordinates, filename):
-	r = requests.post("http://10.1.57.91:8000", files=coordinates)
-	#print(coordinates)
-	#jcoord = json.dumps(dict(coordinates))
-	#jcoord = json.dumps(coordinates)
-	#print(jcoord)
-	#with open(filename, 'w') as json_file:
-		#json.dump(jcoord, json_file)
+	#converts coordinates (list of tuples) to dictionary
+	c_dict = {
+		"x": [ i for i, j in coordinates],
+		"y": [ j for i, j in coordinates],
+	}
+	c_dict = json.dumps(c_dict)
+	#print(type(c_dict))
+	#print(c_dict)
+	response = requests.post("http://10.1.57.87:8000", json = c_dict)
 
-"""	
+"""
 # Print coordinate list to csv file
 def print_solution(coordinates, filename):
 	with open(filename, 'w', newline='') as fp:
 		csvwriter = csv.writer(fp)
 		csvwriter.writerows(coordinates)
 	fs = open(filename, "rb")
-	response = requests.post("http://10.1.57.91:8000", files={"file": fs})
+	response = requests.post("http://10.1.57.87:8000", files={"file": fs})
 	print(response)
-"""
 def print_to_port(filename):
 	pairs = ""
 	ser = serial.Serial('/dev/ttyUSB0', 115200)
