@@ -231,14 +231,21 @@ def ordered_solution(manager, routing, solution, coordinates):
 
 def print_solution(coordinates, filename):
 	#converts coordinates (list of tuples) to dictionary
+	c_dict = {}
+	for i in range(len(coordinates)):
+		c_dict['c' + str(i)] = list(map(str,coordinates[i]))
+	print(c_dict)
+	"""
+	#This is a format that creates a list of x values and a list of y values
 	c_dict = {
 		"x": [ i for i, j in coordinates],
 		"y": [ j for i, j in coordinates],
 	}
 	c_dict = json.dumps(c_dict)
 	#print(type(c_dict))
-	#print(c_dict)
+	print(c_dict)
 	response = requests.post("http://10.1.57.87:8000", json = c_dict)
+	"""
 
 """
 # Print coordinate list to csv file
