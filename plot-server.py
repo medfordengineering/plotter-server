@@ -34,14 +34,15 @@ def uploaded_file():
 		size = request.form.get('size')
 		limit = request.form.get('point_limit') 
 
-		# Create output file names
-		basename = infile.split('.')[0]
-		session['basename'] = basename
-		outfile = basename + '.pbm'
-		viewfile = basename + '.gif'
-
 		# Convert image to PBM
 		total_points = find_limit(int(limit), size, infile)
+
+		# Create output file names
+		basename = infile.split('.')[0] + str(total_points) 
+		session['basename'] = basename 
+		outfile = basename + '.pbm'
+		viewfile = basename + '.gif'
+		print(outfile)
 
 		# Create view file
 		cmd = ['convert', 'static/' + outfile, 'static/' + viewfile]
@@ -58,8 +59,11 @@ def process_file():
 
 		# Create file names
 		outfile = session['basename'] + '.pbm'
-		rawfile = session['basename'] + '_u.csv'
-		tspfile = session['basename'] + '_o.csv'
+		#rawfile = session['basename'] + '_u.csv'
+		#tspfile = session['basename'] + '_o.csv'
+		rawfile = session['basename'] + '_u.json'
+		tspfile = session['basename'] + '_o.json'
+		print(outfile)
 
 		# Create unsorted data set from PBM and save as csv 
 		unsorted = create_data_model('static/' + outfile)
@@ -71,7 +75,7 @@ def process_file():
 
 		if process == 'noTSP':
 			#print_to_port('static/' + rawfile)
-			print_solution(unsorted, 'static/' + rawfile)
+			save_solution(unsorted, 'static/' + rawfile)
 			return render_template('complete.html', elapse_time = 0)
 
 		elif process == 'withTSP':
@@ -112,11 +116,31 @@ def process_file():
 			# Create list of ordered pairs and print to txt file
 			if solution:
 				ordered_pairs = ordered_solution(manager, routing, solution, unsorted)
-				print_solution(ordered_pairs, 'static/' + tspfile)
+				save_solution(ordered_pairs, 'static/' + tspfile)
 				print(type(ordered_pairs))
 				#print_to_port('static/' + tspfile)
 				
 			return render_template('complete.html', elapse_time = elapse)
+
+@app.route('/select', methods = ['GET', 'POST'])
+def select_file():
+	if request.method == 'GET' or request.method == 'POST':
+		names = []
+		path = 'static'
+		for root, directories, files in os.walk(path, topdown=False):
+			for name in files:
+				if name.endswith('.json'):
+					names.append(name)
+			print(names)
+		return render_template('finished.html', pnames=names)
+
+@app.route('/print', methods = ['GET', 'POST'])
+def print_file():
+	if request.method == 'POST':
+		selected_file = request.form.get('printname')
+		print(selected_file)
+		print_solution(selected_file)
+	return 'OK'
 
 # Avoids caching of image files
 @app.after_request
@@ -229,44 +253,35 @@ def ordered_solution(manager, routing, solution, coordinates):
 		index = solution.Value(routing.NextVar(index))
 	return ordered_pairs
 
-def print_solution(coordinates, filename):
+def print_solution(filename):
+	#open selected file
+	with open('static/' + filename) as infile:
+		data = json.load(infile)
+	
+	#send file to plotter controller
+	response = requests.post("http://10.1.57.87:8000", json = data)
+
+
+def save_solution(coordinates, filename):
 	#converts coordinates (list of tuples) to dictionary
 	c_dict = {}
 	for i in range(len(coordinates)):
 		c_dict['c' + str(i)] = list(map(str,coordinates[i]))
-	print(c_dict)
-	"""
+	#print(c_dict)
+
+	#save solution as json file
+	with open(filename, 'w') as outfile:
+		json.dump(c_dict, outfile)
+	
+		"""
 	#This is a format that creates a list of x values and a list of y values
 	c_dict = {
 		"x": [ i for i, j in coordinates],
 		"y": [ j for i, j in coordinates],
 	}
-	c_dict = json.dumps(c_dict)
-	#print(type(c_dict))
-	print(c_dict)
 	response = requests.post("http://10.1.57.87:8000", json = c_dict)
 	"""
 
-"""
-# Print coordinate list to csv file
-def print_solution(coordinates, filename):
-	with open(filename, 'w', newline='') as fp:
-		csvwriter = csv.writer(fp)
-		csvwriter.writerows(coordinates)
-	fs = open(filename, "rb")
-	response = requests.post("http://10.1.57.87:8000", files={"file": fs})
-	print(response)
-def print_to_port(filename):
-	pairs = ""
-	ser = serial.Serial('/dev/ttyUSB0', 115200)
-	time.sleep(2)
-	with open(filename, 'r') as fp:
-		csvreader = csv.reader(fp)
-		for row in csvreader:
-			pairs = json.dumps(row)	
-			ser.write(pairs.encode('ascii'))
-			time.sleep(.05)
-"""
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=5000, debug = True)

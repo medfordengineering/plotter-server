@@ -1,7 +1,17 @@
 <html>
    <body>
-		<p>
-		This file had {{ points }} and took {{ elapse_time }} seconds to complete.
-		<p>
+	<form action = "http://10.1.57.24:5000/print" method = "POST"
+		enctype = "multipart/form-dat">
+		<select name="printname" id="namesp">
+		{% for name in pnames %}
+		<option value= "{{name}}" SELECTED>{{name}}</option>
+		{% endfor %}
+		</select>
+		<input type = "submit">
+	</form>
    </body>
 </html
+
+
+
+
