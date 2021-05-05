@@ -38,14 +38,18 @@ def uploaded_file():
 		total_points = find_limit(int(limit), size, infile)
 
 		# Create output file names
-		basename = infile.split('.')[0] + str(total_points) 
-		session['basename'] = basename 
+		basename = infile.split('.')[0] 
+		session['basename'] = basename + str(total_points)
 		outfile = basename + '.pbm'
 		viewfile = basename + '.gif'
-		print(outfile)
+		sizedfile = session['basename']  + '.pbm'
 
 		# Create view file
 		cmd = ['convert', 'static/' + outfile, 'static/' + viewfile]
+		subprocess.call(cmd, shell=False)
+
+		# Rename pbm to include number of points in file	
+		cmd = ['mv', 'static/' + outfile, 'static/' + sizedfile]
 		subprocess.call(cmd, shell=False)
 
 		return render_template('view.html', user_image = viewfile, points = total_points, filename = outfile)
