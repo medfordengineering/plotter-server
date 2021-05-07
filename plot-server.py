@@ -17,6 +17,12 @@ import requests
 app = Flask(__name__)
 app.secret_key = "hello"
 
+# Testing the use of jquery 
+@app.route('/control')
+def control_page():
+	return render_template('control.html')
+
+
 @app.route('/upload')
 def upload_file():
 	return render_template('upload.html')

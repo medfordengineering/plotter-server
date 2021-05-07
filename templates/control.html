@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+	$("button").click(function(){
+		$.post("http://10.1.57.87:8000/control",
+			{ name: "Donald Duck", city: "Duckburg" },
+			function(data,status)
+			{ alert("Data: " + data + "\nStatus: " + status); });
+			});
+	});
+</script>
+</head>
+<body>
+
+<button>X-Axis</button>
+
+</body>
+</html>
+
