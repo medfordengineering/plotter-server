@@ -3,19 +3,43 @@
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
+var dict = {uname: "me", pword: "help"};
 $(document).ready(function(){
-	$("button").click(function(){
-		$.post("http://10.1.57.87:8000/control",
-			{ name: "Donald Duck", city: "Duckburg" },
-			function(data,status)
-			{ alert("Data: " + data + "\nStatus: " + status); });
+	$("#plsx").click(function(){
+			/*
+		$.ajax({
+			type: "POST",
+			url: "http://10.1.57.87:8000/control",
+			data: JSON.stringify(dict), 
+			//data: { axis: "x", direction: "pos" },
+			contentType: "application/json",
 			});
+		});
+		*/
+		$.post("http://10.1.57.87:8000/control",
+			{
+				axis: "x", direction: "pos" 
+			},
+			function(data,status) { });
 	});
+	$("#minx").click(function() {
+			$.post("http://10.1.57.87:8000/control",
+			{ 
+				axis: "x", direction: "neg" 
+			},
+			function(data,status) { });
+	});
+});
 </script>
 </head>
 <body>
+<p> X-Axis</p>
+<button id="plsx">+</button>
+<button id="minx">-</button>
+<p> Y-Axis</p>
+<button id="plsy">+</button>
+<button id="miny">-</button>
 
-<button>X-Axis</button>
 
 </body>
 </html>
